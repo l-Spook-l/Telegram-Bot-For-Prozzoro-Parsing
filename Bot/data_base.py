@@ -44,3 +44,14 @@ async def sql_read(message):
         # разбираем таблицу по столбцам
         await bot.send_message(message.from_user.id,
                                f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}')
+
+
+async def sql_read_for_del(message):
+    print('user', message.from_user.id)
+    return cur.execute(f'SELECT * FROM user_settings WHERE user == {message.from_user.id}').fetchall()
+
+
+async def sql_delete_command(data):
+    print('data', data)
+    cur.execute('DELETE FROM user_settings WHERE id == ?', (data,))
+    base.commit()
