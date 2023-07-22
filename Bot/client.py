@@ -6,9 +6,10 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext  # для аннотации типов
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from data_base import sql_add_command, sql_read, sql_delete_command, sql_read_for_del
+from config import bot
 
 # подключаем токен бота
-bot = Bot('6310770192:AAEXZ7T8wq9yoctvTamNSBN1fajyqsQzHD8')
+# bot = Bot('6310770192:AAEXZ7T8wq9yoctvTamNSBN1fajyqsQzHD8')
 # отслеживание событий
 dp = Dispatcher(bot)
 
