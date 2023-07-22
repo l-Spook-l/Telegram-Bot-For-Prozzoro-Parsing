@@ -17,20 +17,11 @@ ID = None
 
 # класс для состояний
 class FSMClient(StatesGroup):
-    # состояния - State()
-    # Customer = State()
-    # Participant = State()
-    # Procuring_entity = State()
     DK021_2015 = State()
     Status = State()
     Procurement_type = State()
     Region = State()
     Dispatch_time = State()
-    # Estimated_value = State()
-    # Dates = State()
-    # Justification = State()
-    # Proposal_evaluation = State()
-    # Payment_terms = State()
     Email = State()
 
 
@@ -127,6 +118,11 @@ async def email(message: types.Message, state: FSMContext):
         await state.finish()  # тут заканчивается машина состояний
 
 
+async def param(message: types.Message):
+    await message.reply('Список ваших запитів')
+    await sql_read(message)
+
+
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(commands_start, commands=['start', 'help'], state=None)
 
@@ -143,8 +139,8 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(dispatch_time, state=FSMClient.Dispatch_time)
     dp.register_message_handler(email, state=FSMClient.Email)
 
-    # dp.register_message_handler(param, Text(equals='Ваші запити', ignore_case=True))  # обычный текста
-    #
+    dp.register_message_handler(param, Text(equals='Ваші запити', ignore_case=True))  # обычный текста
+
     # dp.register_callback_query_handler(del_callback_run, lambda x: x.data and x.data.startswith('del '))
     # dp.register_message_handler(delete_item, commands='Видалити запит')
     # dp.register_message_handler(delete_item, Text(equals='Видалити запит', ignore_case=True))
