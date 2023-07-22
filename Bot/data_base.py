@@ -2,14 +2,13 @@ import sqlite3 as sq
 from config import bot
 
 
-# созадем или подключаемся к БД
+# созадаем или подключаемся к БД
 def sql_start():
     global base, cur
     # создаем подключение к БД
     base = sq.connect('prozorro_user_set.db')
     cur = base.cursor()  # для работы с БД
     if base:
-        # если все норм
         print('Data base connected OK!')
 
     # создаем таблицу если ее нету в бд
@@ -25,3 +24,13 @@ def sql_start():
         'Email TEXT)'
     )
     base.commit()
+
+
+async def sql_add_command(state):
+    async with state.proxy() as data:
+        print(tuple(data.values()))
+        # подставляем значения
+        cur.execute(
+            'INSERT INTO user_settings (user, DK021_2015, Status, Procurement_type, Region, Dispatch_time, Email) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            tuple(data.values()))
+        base.commit()
