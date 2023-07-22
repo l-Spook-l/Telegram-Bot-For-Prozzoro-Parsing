@@ -123,6 +123,34 @@ async def param(message: types.Message):
     await sql_read(message)
 
 
+# если событие - (del )
+# @dp.callback_query_handler(lambda x: x.data and x.data.startswith('del '))
+async def del_callback_run(callback_query: types.CallbackQuery):
+    # удаляем выбраную запись
+    await sql_delete_command(callback_query.data.replace('del ', ''))
+    # и отвечам для окончания процесса
+    # show_alert - всплывающие окно
+    # await callback_query.answer(text=f'{callback_query.data.replace("del ", "")} удалена.', show_alert=True)
+    await callback_query.answer(text='Запит успішно видалено', show_alert=True)
+
+
+# добавлянм кнопку удалить
+# @dp.message_handler(commands='Видалити запит')
+async def delete_item(message: types.Message):
+    if message.from_user.id == ID:  # проверка
+        # читаем из бд все
+        print('message', message)
+        read = await sql_read_for_del(message)  # читаем данные из бд
+        print('read', read)
+        for ret in read:
+            print('ret', ret)
+            # отправляем  данные и создаем кнопки для каждого запроса
+            await bot.send_message(message.from_user.id,
+                                   f'ДК021:2015: {ret[1]}\nСтатус: {ret[2]}\nВид закупівлі: {ret[3]}\nРегіон: {ret[4]}\nЧас відправки: {ret[5]}\nПошта: {ret[6]}',
+                                   reply_markup=InlineKeyboardMarkup().add(
+                                       InlineKeyboardButton('Видалити', callback_data=f'del {ret[0]}')))
+
+
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(commands_start, commands=['start', 'help'], state=None)
 
@@ -141,6 +169,6 @@ def register_handlers_client(dp: Dispatcher):
 
     dp.register_message_handler(param, Text(equals='Ваші запити', ignore_case=True))  # обычный текста
 
-    # dp.register_callback_query_handler(del_callback_run, lambda x: x.data and x.data.startswith('del '))
-    # dp.register_message_handler(delete_item, commands='Видалити запит')
-    # dp.register_message_handler(delete_item, Text(equals='Видалити запит', ignore_case=True))
+    dp.register_callback_query_handler(del_callback_run, lambda x: x.data and x.data.startswith('del '))
+    dp.register_message_handler(delete_item, commands='Видалити запит')
+    dp.register_message_handler(delete_item, Text(equals='Видалити запит', ignore_case=True))
