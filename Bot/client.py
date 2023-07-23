@@ -9,7 +9,7 @@ from data_base import sql_add_command, sql_read, sql_delete_command, sql_read_fo
 from config import bot
 
 # подключаем токен бота
-# bot = Bot('6310770192:AAEXZ7T8wq9yoctvTamNSBN1fajyqsQzHD8')
+# bot = Bot('5310179992:AAEXZajyqsQzHD8')
 # отслеживание событий
 dp = Dispatcher(bot)
 
@@ -45,8 +45,7 @@ async def update(message: types.Message):
         await message.reply('Введіть код ДК021:2015')
 
 
-# выход из состояний (команда для отмены) - лбое состояние state="*"
-# должен быть сразу после старта
+# выход из состояний (команда для отмены)
 # @dp.register_message_handler(state="*", commands='отмена')  # для команды
 # @dp.register_message_handler(Text(equals='отмена', ignore_case=True), state="*")  # для обычного текста
 async def cancel_handler(message: types.Message, state: FSMContext):
@@ -135,7 +134,7 @@ async def del_callback_run(callback_query: types.CallbackQuery):
     await callback_query.answer(text='Запит успішно видалено', show_alert=True)
 
 
-# добавлянм кнопку удалить
+# добавляем кнопку удалить
 # @dp.message_handler(commands='Видалити запит')
 async def delete_item(message: types.Message):
     if message.from_user.id == ID:  # проверка
