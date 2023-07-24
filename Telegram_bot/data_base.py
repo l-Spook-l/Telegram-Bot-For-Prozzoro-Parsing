@@ -60,5 +60,32 @@ async def sql_delete_command(data):
 
 async def sql_read_time():
     res = cur.execute('SELECT id, Dispatch_time FROM user_settings').fetchall()
-    print(res)
+    print('sql_read_time', res)
     return res
+
+
+async def sql_read_time_2(time_now):
+    res = cur.execute(f'SELECT * FROM user_settings WHERE Dispatch_time == {time_now}').fetchall()
+    print('sql_read_time_2', res)
+    return res
+
+
+async def sql_get_data(user_id, time):
+    print('databse2: ', user_id)
+    list_test = []
+
+    # перебираем все данные по таблицам в виде списка
+    for ret in cur.execute(f'SELECT * FROM user_settings WHERE User = {user_id} AND Dispatch_time = {time}').fetchall():
+        print('ret', ret)
+        # разбираем таблицу по столбцам
+        list_test.append({
+            'id': ret[0],
+            'user': ret[1],
+            'ДК021:2015': ret[2],
+            'Статус': ret[3],
+            'Вид закупівлі': ret[4],
+            'Регіон': ret[5],
+            'Час відправки': ret[6],
+            'Пошта': ret[7],
+        })
+    return list_test
