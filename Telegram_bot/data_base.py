@@ -4,9 +4,10 @@ from config import bot
 
 # созадаем или подключаемся к БД
 def sql_start():
+    print('eqewqewqeqew')
     global base, cur
     # создаем подключение к БД
-    base = sq.connect('prozorro_user_set.db')
+    base = sq.connect('../prozorro_user_set.db')
     cur = base.cursor()  # для работы с БД
     if base:
         print('Data base connected OK!')
@@ -55,3 +56,9 @@ async def sql_delete_command(data):
     print('data', data)
     cur.execute('DELETE FROM user_settings WHERE id == ?', (data,))
     base.commit()
+
+
+async def sql_read_time():
+    res = cur.execute('SELECT id, Dispatch_time FROM user_settings').fetchall()
+    print(res)
+    return res

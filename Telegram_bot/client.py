@@ -9,7 +9,7 @@ from data_base import sql_add_command, sql_read, sql_delete_command, sql_read_fo
 from config import bot
 
 # подключаем токен бота
-# bot = Bot('5310179992:AAEXZajyqsQzHD8')
+# bot = Telegram_bot('5310179992:AAEXZajyqsQzHD8')
 # отслеживание событий
 dp = Dispatcher(bot)
 
@@ -146,7 +146,7 @@ async def delete_item(message: types.Message):
             print('ret', ret)
             # отправляем  данные и создаем кнопки для каждого запроса
             await bot.send_message(message.from_user.id,
-                                   f'ДК021:2015: {ret[1]}\nСтатус: {ret[2]}\nВид закупівлі: {ret[3]}\nРегіон: {ret[4]}\nЧас відправки: {ret[5]}\nПошта: {ret[6]}',
+                                   f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}',
                                    reply_markup=InlineKeyboardMarkup().add(
                                        InlineKeyboardButton('Видалити', callback_data=f'del {ret[0]}')))
 

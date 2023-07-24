@@ -53,7 +53,6 @@ def get_json():
     except Exception as ex:
         print('Something went wrong')
         print(f'Error{ex}')
-
     return list_data, total_tenders
 
 

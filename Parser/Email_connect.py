@@ -6,6 +6,10 @@ from Create_HTML import append_HTML
 from dotenv import load_dotenv
 import os
 
+from data_base import connect_database, sql_read  #
+# import tracemalloc
+# tracemalloc.start()
+
 load_dotenv()
 
 
@@ -53,7 +57,18 @@ def send_email():
 
 def main():
     # Задаем время
-    schedule.every().day.at("23:41").do(send_email)
+    schedule.every().day.at("00:24").do(send_email)
+
+    # ===========================================================================
+    # ===========================================================================
+    # ===========================================================================
+
+    connect_database()
+    print(sql_read(619709170))
+
+    # ===========================================================================
+    # ===========================================================================
+    # ===========================================================================
 
     while True:
         # Запуск
