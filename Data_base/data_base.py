@@ -7,7 +7,7 @@ def sql_start():
     print('eqewqewqeqew')
     global base, cur
     # создаем подключение к БД
-    base = sq.connect('../prozorro_user_set.db')
+    base = sq.connect('prozorro_user_set.db')
     cur = base.cursor()  # для работы с БД
     if base:
         print('Data base connected OK!')

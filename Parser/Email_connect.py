@@ -2,18 +2,19 @@ import schedule  # для запуска в определенное время
 import smtplib  # для работы с почтой
 from time import sleep
 from email.mime.text import MIMEText  # Для работы с кириллицей
-from Create_HTML import append_HTML
+from .Create_HTML import append_HTML
 from dotenv import load_dotenv
 import os
 
-from data_base import connect_database, sql_read  #
-# import tracemalloc
-# tracemalloc.start()
 
 load_dotenv()
 
 
-def send_email():
+def send_email(data):
+    print('data send email', data)
+    print('data in', data[0])
+    print('data in', data[0]['Пошта'])
+    print('data in', data[1])
     append_HTML()
     # Адрес электронной почты, которая будет отправлять сообщение
     sender = os.getenv('EMAIL')
@@ -48,7 +49,7 @@ def send_email():
         # Задаем тему сообщения
         msg["Subject"] = "Тестовая тема"
         # Отправляем сообщение (Кто отправляет, кому, сообщение)
-        server.sendmail(sender, recipient, msg.as_string())
+        # server.sendmail(sender, recipient, msg.as_string())
 
         return "Сообщение успешно отправлено"
     except Exception as ex:
@@ -63,8 +64,8 @@ def main():
     # ===========================================================================
     # ===========================================================================
 
-    connect_database()
-    print(sql_read(619709170))
+    # connect_database()
+    # print(sql_read(619709170))
 
     # ===========================================================================
     # ===========================================================================
