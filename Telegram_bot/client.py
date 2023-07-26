@@ -8,9 +8,6 @@ from Data_base.data_base import sql_add_command, sql_read, sql_delete_command, s
 from config import bot
 from .client_buttons import markup
 
-# подключаем токен бота
-# bot = Telegram_bot('5310179992:AAEXZajyqsQzHD8')
-# отслеживание событий
 dp = Dispatcher(bot)
 
 ID = None

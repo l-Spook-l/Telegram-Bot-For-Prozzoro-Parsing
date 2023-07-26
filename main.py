@@ -22,9 +22,9 @@ async def check_update_database():
 
         await schedule.run_pending()
         await asyncio.sleep(60)
-        user = await sql_read_time_2(12)
+        user = await sql_read_time_2(20)
         print('user', user)
-        data = await sql_get_data(user[0][1], 12)
+        data = await sql_get_data(user[0][1], 20)
         if data:
             print('что-то есть', len(data))
 

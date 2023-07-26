@@ -1,8 +1,8 @@
 from .Prozorro_parser import get_json
 
 
-def append_HTML():
-    data, total_tenders = get_json()
+def append_HTML(data_for_parser):
+    data, total_tenders = get_json(data_for_parser)
 
     # Шаблон HTML-файла
     List_HTML_for_email = ['<!doctype html>\n', '<html lang="en">\n', '<head>\n', '    <meta charset="UTF-8">\n',

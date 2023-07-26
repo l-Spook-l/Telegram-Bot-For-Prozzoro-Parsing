@@ -1,7 +1,10 @@
 import requests
+from .options import regions, status, procurement_type
+from .options import get_url
 
 
-def get_json():
+def get_json(data_for_parser):
+    print('Parser data', data_for_parser)
     headers = {
         "Accept": "application/json, text/javascript, */*; q=0.01",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -9,8 +12,18 @@ def get_json():
     }
     list_data = []
 
-    url = "https://prozorro.gov.ua/api/search/tenders?filterType=tenders&status%5B0%5D=active.enquiries&status%5B1%5D=active.tendering&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&page=1&region=1-6"
+    # DK012_2015 = data_for_parser[0]['ДК021:2015'].split(',')
+    # Status = data_for_parser[0]['Статус'].split(',')
+    # Procurement_type = data_for_parser[0]['Вид закупівлі'].split(',')
+    # print(f'ДК021:2015 - {DK012_2015}, Статус - {Status}, Вид закупівлі - {Procurement_type}')
+    # for i in Status:
+    #     print('s', i)
+    #     print(i in status)
 
+    print('url', get_url(data_for_parser))
+    print('url', 'https://prozorro.gov.ua/api/search/tenders?filterType=tenders&region=1-6&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&status%5B0%5D=active.tendering&status%5B1%5D=active&proc_type%5B0%5D=aboveThreshold')
+    # url = "https://prozorro.gov.ua/api/search/tenders?filterType=tenders&status%5B0%5D=active.enquiries&status%5B1%5D=active.tendering&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&page=1&region=1-6"
+    url = get_url(data_for_parser)
     # Получаем JSON файл
     session = requests.session()
     response = session.post(url=url, headers=headers)
@@ -28,7 +41,8 @@ def get_json():
         for item in range(1, page + 1):
             print("==============================================================================================")
             print(item)
-            url_page = f"https://prozorro.gov.ua/api/search/tenders?filterType=tenders&status%5B0%5D=active.enquiries&status%5B1%5D=active.tendering&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&page=1&region=1-6&page={item}"
+            # url_page = f"https://prozorro.gov.ua/api/search/tenders?filterType=tenders&status%5B0%5D=active.enquiries&status%5B1%5D=active.tendering&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&page=1&region=1-6&page={item}"
+            url_page = f"{url}&page={item}"
             session = requests.session()
             response = session.post(url=url_page, headers=headers)
             data_page = response.json()

@@ -14,9 +14,10 @@ def send_email(data):
     print('data send email', data)
     print('data in', data[0])
     print('data in', data[0]['Пошта'])
-    print('data in', data[1])
-    append_HTML()
+    # print('data in', data[1])
+    append_HTML(data)
     # Адрес электронной почты, которая будет отправлять сообщение
+    # sender = data[0]['Пошта']
     sender = os.getenv('EMAIL')
 
     # Адрес электронной почты, на который вы хотите отправить сообщение
