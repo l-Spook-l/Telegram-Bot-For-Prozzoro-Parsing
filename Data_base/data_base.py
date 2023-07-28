@@ -29,7 +29,6 @@ def sql_start():
 
 async def sql_add_command(state):
     async with state.proxy() as data:
-        print(tuple(data.values()))
         # подставляем значения
         cur.execute(
             'INSERT INTO user_settings (user, DK021_2015, Status, Procurement_type, Region, Dispatch_time, Email) VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -38,7 +37,7 @@ async def sql_add_command(state):
 
 
 async def sql_read(message):
-    print('databse2: ', message)
+    print('sql_read: ', message)
     # перебираем все данные по таблицам в виде списка
     for ret in cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall():
         print('ret', ret)
@@ -56,12 +55,6 @@ async def sql_delete_command(data):
     print('data', data)
     cur.execute('DELETE FROM user_settings WHERE id = ?', (data,))
     base.commit()
-
-
-# async def sql_read_time():
-#     res = cur.execute('SELECT id, Dispatch_time FROM user_settings').fetchall()
-#     print('sql_read_time', res)
-#     return res
 
 
 async def sql_read_time(time_now):

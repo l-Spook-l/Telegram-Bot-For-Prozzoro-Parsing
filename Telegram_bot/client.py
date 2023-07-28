@@ -72,7 +72,7 @@ async def status(message: types.Message, state: FSMContext):
     if message.from_user.id == ID:
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
-            data['Status'] = message.text
+            data['Status'] = message.text.lower()
         await FSMClient.next()  # для ожидания ввода
         await message.answer('Введіть вид закупівлі')
 
@@ -82,7 +82,7 @@ async def procurement_type(message: types.Message, state: FSMContext):
     if message.from_user.id == ID:
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
-            data['Procurement_type'] = message.text
+            data['Procurement_type'] = message.text.lower()
         await FSMClient.next()  # для ожидания ввода
         await message.answer('Оберіть потрібний регіон')
 

@@ -26,7 +26,7 @@ async def check_update_database():
             print('что-то есть', len(data))
             print('===========================================================')
             print('data', data)
-            # send_email(data)
+            send_email(data)
             print('===========================================================')
             # print('user', user[0][1])  id
 
