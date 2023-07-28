@@ -4,7 +4,7 @@ from config import bot
 
 # созадаем или подключаемся к БД
 def sql_start():
-    print('eqewqewqeqew')
+    print('sql_start')
     global base, cur
     # создаем подключение к БД
     base = sq.connect('prozorro_user_set.db')
@@ -40,7 +40,7 @@ async def sql_add_command(state):
 async def sql_read(message):
     print('databse2: ', message)
     # перебираем все данные по таблицам в виде списка
-    for ret in cur.execute(f'SELECT * FROM user_settings WHERE user == {message.from_user.id}').fetchall():
+    for ret in cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall():
         print('ret', ret)
         # разбираем таблицу по столбцам
         await bot.send_message(message.from_user.id,
@@ -49,33 +49,33 @@ async def sql_read(message):
 
 async def sql_read_for_del(message):
     print('user', message.from_user.id)
-    return cur.execute(f'SELECT * FROM user_settings WHERE user == {message.from_user.id}').fetchall()
+    return cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall()
 
 
 async def sql_delete_command(data):
     print('data', data)
-    cur.execute('DELETE FROM user_settings WHERE id == ?', (data,))
+    cur.execute('DELETE FROM user_settings WHERE id = ?', (data,))
     base.commit()
 
 
-async def sql_read_time():
-    res = cur.execute('SELECT id, Dispatch_time FROM user_settings').fetchall()
+# async def sql_read_time():
+#     res = cur.execute('SELECT id, Dispatch_time FROM user_settings').fetchall()
+#     print('sql_read_time', res)
+#     return res
+
+
+async def sql_read_time(time_now):
+    res = cur.execute('SELECT * FROM user_settings WHERE Dispatch_time = ?', (time_now,)).fetchall()
     print('sql_read_time', res)
     return res
 
 
-async def sql_read_time_2(time_now):
-    res = cur.execute(f'SELECT * FROM user_settings WHERE Dispatch_time == {time_now}').fetchall()
-    print('sql_read_time_2', res)
-    return res
-
-
 async def sql_get_data(user_id, time):
-    print('databse2: ', user_id)
+    print('sql_get_data: ', user_id)
     list_test = []
 
     # перебираем все данные по таблицам в виде списка
-    for ret in cur.execute(f'SELECT * FROM user_settings WHERE User = {user_id} AND Dispatch_time = {time}').fetchall():
+    for ret in cur.execute(f'SELECT * FROM user_settings WHERE User = {user_id} AND Dispatch_time = ?', (time,)).fetchall():
         print('ret', ret)
         # разбираем таблицу по столбцам
         list_test.append({

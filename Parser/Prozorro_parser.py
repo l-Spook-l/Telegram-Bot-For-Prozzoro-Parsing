@@ -1,5 +1,4 @@
 import requests
-from .options import regions, status, procurement_type
 from .options import get_url
 
 
@@ -12,16 +11,7 @@ def get_json(data_for_parser):
     }
     list_data = []
 
-    # DK012_2015 = data_for_parser[0]['ДК021:2015'].split(',')
-    # Status = data_for_parser[0]['Статус'].split(',')
-    # Procurement_type = data_for_parser[0]['Вид закупівлі'].split(',')
-    # print(f'ДК021:2015 - {DK012_2015}, Статус - {Status}, Вид закупівлі - {Procurement_type}')
-    # for i in Status:
-    #     print('s', i)
-    #     print(i in status)
-
     print('url', get_url(data_for_parser))
-    print('url', 'https://prozorro.gov.ua/api/search/tenders?filterType=tenders&region=1-6&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&status%5B0%5D=active.tendering&status%5B1%5D=active&proc_type%5B0%5D=aboveThreshold')
     # url = "https://prozorro.gov.ua/api/search/tenders?filterType=tenders&status%5B0%5D=active.enquiries&status%5B1%5D=active.tendering&cpv%5B0%5D=71630000-3&cpv%5B1%5D=73110000-6&cpv%5B2%5D=50410000-2&page=1&region=1-6"
     url = get_url(data_for_parser)
     # Получаем JSON файл

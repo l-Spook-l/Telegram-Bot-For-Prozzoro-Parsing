@@ -148,13 +148,6 @@ def get_url(data):
     Status = data[0]['Статус'].split(', ')
     Procurement_type = data[0]['Вид закупівлі'].split(', ')
     print(f'ДК021:2015 - {DK012_2015}, Статус - {Status}, Вид закупівлі - {Procurement_type}')
-    # for i in Status:
-    #     print('s', i)
-    #     print(i in status)
-    #     param += status[i]
-    #
-    # for i in Procurement_type:
-    #     param += procurement_type[i]
 
     for i in range(len(Status)):
         param += f'&status%5B{i}%5D={status[Status[i]]}'

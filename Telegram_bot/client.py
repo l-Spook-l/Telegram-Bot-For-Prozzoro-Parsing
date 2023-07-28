@@ -7,6 +7,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Data_base.data_base import sql_add_command, sql_read, sql_delete_command, sql_read_for_del
 from config import bot
 from .client_buttons import markup
+import re
+
 
 dp = Dispatcher(bot)
 
@@ -91,16 +93,20 @@ async def region(message: types.Message, state: FSMContext):
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
             data['Region'] = message.text
-        await FSMClient.next()  # для ожидания ввода
+        await FSMClient.next()
         await message.answer('Введіть час отправлення повідомлення на електронну пошту')
 
 
 async def dispatch_time(message: types.Message, state: FSMContext):
     if message.from_user.id == ID:
         async with state.proxy() as data:  # работа со словарем машины состояний
+            # Удаление всех символов кроме цифр
+            cleaned_time = re.sub(r'\D', '', message.text)
+            # Добавление символа ":" после первых двух цифр
+            formatted_time = cleaned_time[:2] + ":" + cleaned_time[2:]
             # сохраняем в словарь машины состояния
-            data['Dispatch_time'] = message.text
-        await FSMClient.next()  # для ожидания ввода
+            data['Dispatch_time'] = formatted_time
+        await FSMClient.next()
         await message.answer('Введіть адрес електронної пошти')
 
 
