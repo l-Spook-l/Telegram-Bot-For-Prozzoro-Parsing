@@ -1,14 +1,12 @@
-# инлайн кнопки
 from aiogram import Dispatcher, types
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
-from aiogram.dispatcher import FSMContext  # для аннотации типов
+from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Data_base.data_base import sql_add_command, sql_read, sql_delete_command, sql_read_for_del
 from config import bot
-from .client_buttons import markup
+from .client_buttons import markup, markup_set
 import re
-
 
 dp = Dispatcher(bot)
 
@@ -29,19 +27,19 @@ class FSMClient(StatesGroup):
 async def commands_start(message: types.Message):
     global ID
     ID = message.from_user.id
-    if message.from_user.id != 619709171:
-        await message.answer("Вітаю оберіть, що потрібно зробити", reply_markup=markup)
+    if message.from_user.id != 6197309171:
+        await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=markup)
     print(message.from_user.id)
     # Замовник    # Учасник    # Закупівельник    # ДК021:2015
     # Статус    # Вид закупівлі    # Регіон    # Очікувана вартість
     # Дати    # Обґрунтування    # Оцінка пропозицій    # Умови оплати
 
 
-# @dp.message_handler(commands=['Обновить'])
-async def update(message: types.Message):
+# @dp.message_handler(commands=['Додати запит'], state=None)
+async def create_new_request(message: types.Message):
     if message.from_user.id == ID:  # если id админа
         await FSMClient.DK021_2015.set()  # для ожидания ввода
-        await message.reply('Введіть код ДК021:2015')
+        await message.answer('Введіть код ДК021:2015', reply_markup=markup_set)
 
 
 # выход из состояний (команда для отмены)
@@ -61,8 +59,10 @@ async def DK021_2015(message: types.Message, state: FSMContext):
     if message.from_user.id == ID:
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
+            print('DK021_2015 message.text', message.text)
             data['user'] = ID
             data['DK021_2015'] = message.text
+            print('data1', data)
         await FSMClient.next()  # для ожидания ввода
         await message.answer('Введіть статус')
 
@@ -73,6 +73,7 @@ async def status(message: types.Message, state: FSMContext):
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
             data['Status'] = message.text.lower()
+            print('data2', data)
         await FSMClient.next()  # для ожидания ввода
         await message.answer('Введіть вид закупівлі')
 
@@ -83,6 +84,7 @@ async def procurement_type(message: types.Message, state: FSMContext):
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
             data['Procurement_type'] = message.text.lower()
+            print('data3', data)
         await FSMClient.next()  # для ожидания ввода
         await message.answer('Оберіть потрібний регіон')
 
@@ -93,6 +95,7 @@ async def region(message: types.Message, state: FSMContext):
         async with state.proxy() as data:  # работа со словарем машины состояний
             # сохраняем в словарь машины состояния
             data['Region'] = message.text
+            print('data4', data)
         await FSMClient.next()
         await message.answer('Введіть час отправлення повідомлення на електронну пошту')
 
@@ -106,6 +109,7 @@ async def dispatch_time(message: types.Message, state: FSMContext):
             formatted_time = cleaned_time[:2] + ":" + cleaned_time[2:]
             # сохраняем в словарь машины состояния
             data['Dispatch_time'] = formatted_time
+            print('data5', data)
         await FSMClient.next()
         await message.answer('Введіть адрес електронної пошти')
 
@@ -116,8 +120,9 @@ async def email(message: types.Message, state: FSMContext):
             # сохраняем в словарь машины состояния
             data['Email'] = message.text
         # тут надо бы все записать в БД
+        print('finish data', data)
         await sql_add_command(state)  # записываем данные в бд
-        await message.answer('Новий запит успішно додано')
+        await message.answer('Новий запит успішно додано', reply_markup=markup)
         await state.finish()  # тут заканчивается машина состояний
 
 
@@ -133,7 +138,6 @@ async def del_callback_run(callback_query: types.CallbackQuery):
     await sql_delete_command(callback_query.data.replace('del ', ''))
     # и отвечам для окончания процесса
     # show_alert - всплывающие окно
-    # await callback_query.answer(text=f'{callback_query.data.replace("del ", "")} удалена.', show_alert=True)
     await callback_query.answer(text='Запит успішно видалено', show_alert=True)
 
 
@@ -157,8 +161,9 @@ async def delete_item(message: types.Message):
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(commands_start, commands=['start', 'help'], state=None)
 
-    dp.register_message_handler(update, commands=['Додати запит'], state=None)
-    dp.register_message_handler(update, Text(equals='Додати запит', ignore_case=True), state=None)  # обычный текста
+    dp.register_message_handler(create_new_request, commands=['Додати запит'], state=None)
+    dp.register_message_handler(create_new_request, Text(equals='Додати запит', ignore_case=True),
+                                state=None)  # обычный текста
 
     dp.register_message_handler(cancel_handler, state="*", commands='Відміна')  # для команды для любого - state="*"
     dp.register_message_handler(cancel_handler, Text(equals='Відміна', ignore_case=True), state="*")  # обычный текста
