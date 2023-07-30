@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Data_base.data_base import sql_add_command, sql_read, sql_delete_command, sql_read_for_del
 from config import bot
-from .client_buttons import markup, markup_set
+from .client_buttons import action_menu_markup, skip_cancel_markup
 import re
 
 dp = Dispatcher(bot)
@@ -28,7 +28,7 @@ async def commands_start(message: types.Message):
     global ID
     ID = message.from_user.id
     if message.from_user.id != 6197309171:
-        await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=markup)
+        await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
     print(message.from_user.id)
     # Замовник    # Учасник    # Закупівельник    # ДК021:2015
     # Статус    # Вид закупівлі    # Регіон    # Очікувана вартість
@@ -39,7 +39,7 @@ async def commands_start(message: types.Message):
 async def create_new_request(message: types.Message):
     if message.from_user.id == ID:  # если id админа
         await FSMClient.DK021_2015.set()  # для ожидания ввода
-        await message.answer('Введіть код ДК021:2015', reply_markup=markup_set)
+        await message.answer('Введіть код ДК021:2015', reply_markup=skip_cancel_markup)
 
 
 # выход из состояний (команда для отмены)
@@ -122,7 +122,7 @@ async def email(message: types.Message, state: FSMContext):
         # тут надо бы все записать в БД
         print('finish data', data)
         await sql_add_command(state)  # записываем данные в бд
-        await message.answer('Новий запит успішно додано', reply_markup=markup)
+        await message.answer('Новий запит успішно додано', reply_markup=action_menu_markup)
         await state.finish()  # тут заканчивается машина состояний
 
 
