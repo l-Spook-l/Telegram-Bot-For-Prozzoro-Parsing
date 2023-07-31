@@ -15,7 +15,7 @@ async def check_update_database():
     print('start check_update_database')
     while True:
         # await schedule.run_pending()
-        await asyncio.sleep(60)
+        await asyncio.sleep(20)
         now = datetime.datetime.now()
         formatted_time = now.strftime("%H:%M")
         user = await sql_read_time(formatted_time)
@@ -28,7 +28,6 @@ async def check_update_database():
             print('data', data)
             send_email(data)
             print('===========================================================')
-            # print('user', user[0][1])  id
 
         else:
             print('===========================================================')

@@ -22,6 +22,10 @@ def get_json(data_for_parser):
     quantity_tender_in_page = data['per_page']
     # Всего тендеров
     total_tenders = data["total"]
+    print('total_tenders -', total_tenders)
+
+    if total_tenders >= 500:
+        pass
 
     if total_tenders <= quantity_tender_in_page:
         page = 1
@@ -46,7 +50,10 @@ def get_json(data_for_parser):
                 name_company = data_page["data"][tender]["procuringEntity"]["identifier"]["legalName"]
                 ID_tender = data_page["data"][tender]["tenderID"]
                 price = data_page["data"][tender]["value"]["amount"]
-                start_date = data_page["data"][tender]["enquiryPeriod"]["startDate"][:10]
+                try:
+                    start_date = data_page["data"][tender]["enquiryPeriod"]["startDate"][:10]
+                except Exception as error:
+                    start_date = 'Дати проведення ще немає'
                 link = (f"https://prozorro.gov.ua/tender/{ID_tender}")
                 print("---------------------------------------------------------------------------------------")
                 list_data += [[title, city_company, name_company, ID_tender, price, start_date, link]]
