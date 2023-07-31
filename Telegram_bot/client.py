@@ -30,9 +30,6 @@ async def commands_start(message: types.Message):
     # if message.from_user.id != 6197309171:
     await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
     print(message.from_user.id)
-    # Замовник    # Учасник    # Закупівельник    # ДК021:2015
-    # Статус    # Вид закупівлі    # Регіон    # Очікувана вартість
-    # Дати    # Обґрунтування    # Оцінка пропозицій    # Умови оплати
 
 
 # @dp.message_handler(commands=['Додати запит'], state=None)

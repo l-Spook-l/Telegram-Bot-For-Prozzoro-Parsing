@@ -5,26 +5,30 @@ from config import bot
 # созадаем или подключаемся к БД
 def sql_start():
     print('sql_start')
-    global base, cur
-    # создаем подключение к БД
-    base = sq.connect('prozorro_user_set.db')
-    cur = base.cursor()  # для работы с БД
-    if base:
-        print('Data base connected OK!')
+    global base, cur]
+    try:
+        # создаем подключение к БД
+        base = sq.connect('prozorro_user_set.db')
+        cur = base.cursor()  # для работы с БД
+        if base:
+            print('Data base connected OK!')
 
-    # создаем таблицу если ее нету в бд
-    base.execute(
-        'CREATE TABLE IF NOT EXISTS user_settings('
-        'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-        'User INTEGER , '
-        'DK021_2015 TEXT, '
-        'Status TEXT, '
-        'Procurement_type TEXT, '
-        'Region TEXT,'
-        'Dispatch_time TEXT,'
-        'Email TEXT)'
-    )
-    base.commit()
+        # создаем таблицу если ее нету в бд
+        base.execute(
+            'CREATE TABLE IF NOT EXISTS user_settings('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+            'User INTEGER , '
+            'DK021_2015 TEXT, '
+            'Status TEXT, '
+            'Procurement_type TEXT, '
+            'Region TEXT,'
+            'Dispatch_time TEXT,'
+            'Email TEXT)'
+        )
+        base.commit()
+    except Exception as error:
+        print("Connection refused...")
+        print(f"Error - {error}")
 
 
 async def sql_add_command(state):
@@ -68,7 +72,8 @@ async def sql_get_data(user_id, time):
     list_test = []
 
     # перебираем все данные по таблицам в виде списка
-    for ret in cur.execute(f'SELECT * FROM user_settings WHERE User = {user_id} AND Dispatch_time = ?', (time,)).fetchall():
+    for ret in cur.execute(f'SELECT * FROM user_settings WHERE User = {user_id} AND Dispatch_time = ?',
+                           (time,)).fetchall():
         print('ret', ret)
         # разбираем таблицу по столбцам
         list_test.append({

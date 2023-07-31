@@ -9,7 +9,6 @@ from Data_base.data_base import sql_start, sql_read_time, sql_get_data
 from Parser.Email_connect import send_email
 
 
-# Функция для запуска задачи по расписанию
 async def check_update_database():
     # schedule.every(1).minutes.do(sql_read_time)
     print('start check_update_database')
@@ -28,7 +27,6 @@ async def check_update_database():
             print('data', data)
             send_email(data)
             print('===========================================================')
-
         else:
             print('===========================================================')
             print('Time now: ', datetime.datetime.now())
@@ -37,7 +35,7 @@ async def check_update_database():
 
 
 async def on_startup(_):
-    sql_start()  # запускаем фун-ю подключаем БД
+    sql_start()  # подключаем БД
     print('Бот вышел в онлайн')
 
 
