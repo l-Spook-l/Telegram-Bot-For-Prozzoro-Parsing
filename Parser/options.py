@@ -142,30 +142,24 @@ regions = {
 }
 
 
-def get_url(data):
+async def get_url(data):
     filters = ''
     DK012_2015 = data[0]['ДК021:2015'].split(', ')
     Status = data[0]['Статус'].split(', ')
     Procurement_type = data[0]['Вид закупівлі'].split(', ')
     print(f'ДК021:2015 - {DK012_2015}, Статус - {Status}, Вид закупівлі - {Procurement_type}')
 
-    print('teststststts Status', Status[0] == 'пропустити')
-    print('teststststts DK012_2015', DK012_2015[0] == 'пропустити')
-    print('teststststts Procurement_type', Procurement_type[0] == 'пропустити')
-
     if Status[0] != 'пропустити':
         for id in range(len(Status)):
             filters += f'&status%5B{id}%5D={status[Status[id]]}'
 
-    # if Procurement_type[0] != 'пропустити':
-    #     for id in range(len(Procurement_type)):
-    #         filters += f'&proc_type%5B{id}%5D={procurement_type[Procurement_type[id]]}'
+    if Procurement_type[0] != 'пропустити':
+        for id in range(len(Procurement_type)):
+            filters += f'&proc_type%5B{id}%5D={procurement_type[Procurement_type[id]]}'
 
     if DK012_2015[0] != 'пропустити':
         for id in range(len(DK012_2015)):
             filters += f'&cpv%5B{id}%5D={DK012_2015[id]}'
-
-    print('filters', filters)
 
     url = f'https://prozorro.gov.ua/api/search/tenders?filterType=tenders{filters}&region=1-6'
 
