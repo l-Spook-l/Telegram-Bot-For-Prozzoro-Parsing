@@ -1,8 +1,9 @@
+import aiofiles
 from .Prozorro_parser import get_json
 
 
-def append_HTML(data_for_parser):
-    data, total_tenders = get_json(data_for_parser)
+async def append_HTML(data_for_parser):
+    data, total_tenders = await get_json(data_for_parser)
 
     # Шаблон HTML-файла
     List_HTML_for_email = ['<!doctype html>\n', '<html lang="en">\n', '<head>\n', '    <meta charset="UTF-8">\n',
@@ -22,11 +23,7 @@ def append_HTML(data_for_parser):
         List_HTML_for_email.insert(16 + i, f'<p>Оголошено: {data[item][5]}</p>\n')
         i += 7
 
-    with open("index.html", 'w', encoding='utf-8') as f:
-        f.write(' '.join(List_HTML_for_email))
+    async with aiofiles.open("index.html", 'w', encoding='utf-8') as file:
+        await file.write(' '.join(List_HTML_for_email))
 
     print(total_tenders)
-
-
-if __name__ == "__main__":
-    append_HTML()
