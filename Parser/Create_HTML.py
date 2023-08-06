@@ -3,14 +3,8 @@ from .Prozorro_parser import get_json
 
 
 async def create_HTML(data_for_parser):
-    # data, total_tenders = await get_json(data_for_parser)
     data = await get_json(data_for_parser)
-    print('Create HTML - data', data)
     for i in range(len(data)):
-        print("ddata test  -  ", data[0])
-        # print("ddata test  -  ", data[1])
-        print("data test HTML  -  ", data[i]['total_tenders'])
-
         # Шаблон HTML-файла
         List_HTML_for_email = ['<!doctype html>\n', '<html lang="en">\n', '<head>\n', '    <meta charset="UTF-8">\n',
                                '    <meta name="viewport"\n',
@@ -31,5 +25,3 @@ async def create_HTML(data_for_parser):
 
         async with aiofiles.open(f"index_{i + 1}.html", 'w', encoding='utf-8') as file:
             await file.write(' '.join(List_HTML_for_email))
-
-        print(data[i]['total_tenders'])
