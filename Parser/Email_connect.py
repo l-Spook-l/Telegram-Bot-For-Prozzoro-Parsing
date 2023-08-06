@@ -1,4 +1,4 @@
-from email.mime.text import MIMEText  # Для работы с кириллицей
+from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from .Create_HTML import create_HTML
 from dotenv import load_dotenv
@@ -11,14 +11,12 @@ load_dotenv()
 
 async def send_email(data):
     await create_HTML(data)
-    print('Email connect - data', data)
     for i in range(len(data)):
         # Адрес электронной почты, которая будет отправлять сообщение
         sender = os.getenv('EMAIL')
 
         # Адрес электронной почты, на который вы хотите отправить сообщение
-        recipient = os.getenv('EMAIL')
-        # recipient = data[i]['Пошта']
+        recipient = data[i]['Пошта']
 
         # Это пароль для созданного приложения в почте
         password = os.getenv('PASSWORD')
@@ -38,6 +36,4 @@ async def send_email(data):
         await aiosmtplib.send(message, hostname="smtp.gmail.com", port=465, use_tls=True, username=sender,
                               password=password)
 
-# if __name__ == '__main__':
-# data = ''
-# asyncio.get_event_loop().run_until_complete(send_email(data))
+        print('Message sent successfully')
