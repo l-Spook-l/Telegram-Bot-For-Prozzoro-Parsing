@@ -11,7 +11,7 @@ async def check_update_database():
     print('Start check_update_database')
     time_correction = datetime.timedelta(seconds=0)
     while True:
-        await asyncio.sleep(10 - time_correction.total_seconds())
+        await asyncio.sleep(60 - time_correction.total_seconds())
         now = datetime.datetime.now()
         formatted_time = now.strftime("%H:%M")
         print('=================Time now: ', datetime.datetime.now(), '===================================')
@@ -21,7 +21,7 @@ async def check_update_database():
             data = await sql_get_data(check_data[0][1], formatted_time)
             await send_email(data)
         time_correction = datetime.datetime.now() - now
-        print(f'###################### Погрешность - {time_correction.total_seconds()} #################q##############')
+        print(f'###################### Погрешность - {time_correction.total_seconds()} ###############################')
 
 
 async def on_startup(_):

@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# для хранения данных в опер. памяти
 storage = MemoryStorage()
 
 # подключаем токен бота
