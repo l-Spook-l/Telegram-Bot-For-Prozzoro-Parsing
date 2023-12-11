@@ -22,6 +22,7 @@ class FSMClient(StatesGroup):
 
 
 async def start_bot(message: types.Message):
+    print('messa', message)
     await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
 
 
