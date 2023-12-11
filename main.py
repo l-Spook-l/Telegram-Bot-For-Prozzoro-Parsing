@@ -14,7 +14,7 @@ async def check_update_database():
         await asyncio.sleep(60 - time_correction.total_seconds())
         now = datetime.datetime.now()
         formatted_time = now.strftime("%H:%M")
-        print('=================Time now:! ! ! ', datetime.datetime.now(), '===================================')
+        print('=================Time now: ', datetime.datetime.now(), '===================================')
         check_data = await sql_read_time(formatted_time)
         # если при проверки времени что-то есть
         if check_data:
