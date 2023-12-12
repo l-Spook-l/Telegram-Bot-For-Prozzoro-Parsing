@@ -48,7 +48,10 @@ async def get_json(data_for_parser):
 
                             name_company = data_page["data"][tender]["procuringEntity"]["identifier"]["legalName"]
                             ID_tender = data_page["data"][tender]["tenderID"]
-                            price = data_page["data"][tender]["value"]["amount"]
+                            try:
+                                price = data_page["data"][tender]["value"]["amount"]
+                            except Exception as error:
+                                price = 'Ціни ще немає'
                             try:
                                 start_date = data_page["data"][tender]["enquiryPeriod"]["startDate"][:10]
                             except Exception as error:

@@ -43,7 +43,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 async def DK021_2015(message: types.Message, state: FSMContext):
     async with state.proxy() as data:  # работа со словарем машины состояний
         data['user'] = message.from_user.id
-        data['DK021_2015'] = message.text
+        data['DK021_2015'] = message.text.lower()
     await FSMClient.next()  # для ожидания ввода
     await message.answer('Введіть статус')
 
@@ -82,7 +82,7 @@ async def dispatch_time(message: types.Message, state: FSMContext):
 
 async def email(message: types.Message, state: FSMContext):
     async with state.proxy() as data:  # работа со словарем машины состояний
-        data['Email'] = message.text
+        data['Email'] = message.text.lower()
     await sql_add_data(state)  # записываем данные в бд
     await message.answer('Новий запит успішно додано', reply_markup=action_menu_markup)
     await state.finish()  # тут заканчивается машина состояний

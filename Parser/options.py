@@ -69,12 +69,14 @@ regions = {
 
 async def get_url(data):
     list_url = []
+    print('data', data)
     for i in range(len(data)):
         filters = ''
         DK012_2015 = data[i]['ДК021:2015'].split(', ')
         Status = data[i]['Статус'].split(', ')
         Procurement_type = data[i]['Вид закупівлі'].split(', ')
-        Region = data[i]['Регіон']
+        Region = data[i]['Регіон'].split(', ')
+        print('region ', Region)
 
         if Status[0] != 'пропустити':
             for id in range(len(Status)):
@@ -89,9 +91,10 @@ async def get_url(data):
                 filters += f'&cpv%5B{id}%5D={DK012_2015[id]}'
 
         if Region[0] != 'пропустити':
-            filters += regions[Region]
+            filters += regions[Region[0]]
 
         url = f'https://prozorro.gov.ua/api/search/tenders?filterType=tenders{filters}'
         list_url.append(url)
+    print('list', list_url)
 
     return list_url
