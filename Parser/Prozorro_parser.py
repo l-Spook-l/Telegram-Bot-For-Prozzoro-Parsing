@@ -19,7 +19,7 @@ async def get_json(data_for_parser):
 
     # проходим по каждому url
     for url in range(len(urls)):
-        async with aiohttp.ClientSession() as session:
+        async with (aiohttp.ClientSession() as session):
             response = await session.post(url=urls[url], headers=headers)
             data = await response.json()
             quantity_tender_on_first_page = data['per_page']
@@ -27,7 +27,7 @@ async def get_json(data_for_parser):
 
             if total_tenders >= 500:
                 total_tenders = 500
-
+            print('total ', total_tenders)
             if total_tenders <= quantity_tender_on_first_page:
                 page = 1
             else:
@@ -41,10 +41,15 @@ async def get_json(data_for_parser):
                         data_page = await response_page.json()
                         for tender in range(len(data_page["data"])):
                             title = data_page["data"][tender]["title"]
-                            try:
-                                city_company = data_page["data"][tender]["procuringEntity"]["address"]["locality"]
-                            except Exception as error:
-                                city_company = data_page["data"][tender]["procuringEntity"]["address"]["region"]
+                            # try:
+                            #     city_company = data_page["data"][tender]["procuringEntity"]["address"]["locality"]
+                            # except KeyError:
+                            #     city_company = data_page["data"][tender]["procuringEntity"]["address"]["region"]
+                            # except Exception as error:
+                            #     city_company = 'Регіон не вказано'
+                            city_company = data_page["data"][tender]["procuringEntity"]["address"].get("locality") or \
+                                           data_page["data"][tender]["procuringEntity"]["address"].get("region") or \
+                                           'Регіон не вказано або вказано не вірно'
 
                             name_company = data_page["data"][tender]["procuringEntity"]["identifier"]["legalName"]
                             ID_tender = data_page["data"][tender]["tenderID"]

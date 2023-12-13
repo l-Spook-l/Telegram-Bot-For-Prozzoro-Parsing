@@ -26,6 +26,24 @@ async def start_bot(message: types.Message):
     await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
 
 
+async def help_user(message: types.Message):
+    await message.answer(
+        "Інструкція використання бота."
+        "\nУ нашому боті ви можете налаштувати параметри потрібних вам тендерів та отримувати їх на електронну пошту. "
+        "\nНаразі реалізований пошук тендерів за чотирма параметрами: Статус, Вид закупівлі, ДК021:2015 та Регіон. "
+        "\nДля параметру Регіон можна вказати лише одне значення у одному запиті (це обмеження Prozorro), "
+        "а для решти параметрів можна вказувати кілька значень, розділивши їх комами."
+        "\n                   Приклад запиту:"
+        "\nДК021:2015: 09300000-2"
+        "\nСтатус: період уточнень, прекваліфікація"
+        "\nВид закупівлі: спрощена закупівля"
+        "\nРегіон: київська область"
+        "\nЧас відправки: 18:08"
+        "\nПошта: ваша пошта"
+        "\nТакож якщо вам щось не потрібно, ви можете натиснути кнопку - пропустити",
+        reply_markup=action_menu_markup)
+
+
 async def create_new_request(message: types.Message):
     await FSMClient.DK021_2015.set()  # для ожидания ввода
     await message.answer('Введіть код ДК021:2015', reply_markup=skip_cancel_markup)
@@ -127,12 +145,14 @@ async def delete_item(message: types.Message):
 
 
 def register_handlers_client(dp: Dispatcher):
-    dp.register_message_handler(start_bot, commands=['start', 'help'], state=None)
+    dp.register_message_handler(start_bot, commands=['start'], state=None)
+
+    dp.register_message_handler(help_user, commands=['help', 'Довідка'], state=None)
+    dp.register_message_handler(help_user, Text(equals='Довідка', ignore_case=True), state=None)
 
     dp.register_message_handler(create_new_request, commands=['Додати запит'], state=None)
     dp.register_message_handler(create_new_request, Text(equals='Додати запит', ignore_case=True),
                                 state=None)
-
     dp.register_message_handler(cancel_handler, state="*", commands='Відміна')
     dp.register_message_handler(cancel_handler, Text(equals='Відміна', ignore_case=True), state="*")
 

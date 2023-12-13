@@ -8,7 +8,7 @@ from Parser.Email_connect import send_email
 
 
 async def check_update_database():
-    print('Start check_update_database')
+    print('Start check update database')
     time_correction = datetime.timedelta(seconds=0)
     while True:
         await asyncio.sleep(60 - time_correction.total_seconds())
