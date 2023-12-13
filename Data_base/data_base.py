@@ -7,35 +7,59 @@ def sql_connect():
     global base, cur
     try:
         # создаем подключение к БД
-        base = sq.connect('prozorro_user_set.db')
-        cur = base.cursor()  # для работы с БД
-        if base:
+        with sq.connect('prozorro_user_set.db') as base:
+            cur = base.cursor()  # для работы с БД
             print('Data base connected OK!')
 
-        # создаем таблицу если ее нету в бд
-        base.execute(
-            'CREATE TABLE IF NOT EXISTS user_settings('
-            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
-            'User INTEGER , '
-            'DK021_2015 TEXT, '
-            'Status TEXT, '
-            'Procurement_type TEXT, '
-            'Region TEXT,'
-            'Dispatch_time TEXT,'
-            'Email TEXT)'
-        )
-        base.commit()
+            # создаем таблицу если ее нету в бд
+            cur.execute(
+                'CREATE TABLE IF NOT EXISTS user_settings('
+                'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+                'User INTEGER , '
+                'DK021_2015 TEXT, '
+                'Status TEXT, '
+                'Procurement_type TEXT, '
+                'Region TEXT,'
+                'Dispatch_time TEXT,'
+                'Email TEXT)'
+            )
+            base.commit()
+        # # создаем подключение к БД
+        # base = sq.connect('prozorro_user_set.db')
+        # cur = base.cursor()  # для работы с БД
+        # if base:
+        #     print('Data base connected OK!')
+        #
+        # # создаем таблицу если ее нету в бд
+        # base.execute(
+        #     'CREATE TABLE IF NOT EXISTS user_settings('
+        #     'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+        #     'User INTEGER , '
+        #     'DK021_2015 TEXT, '
+        #     'Status TEXT, '
+        #     'Procurement_type TEXT, '
+        #     'Region TEXT,'
+        #     'Dispatch_time TEXT,'
+        #     'Email TEXT)'
+        # )
+        # base.commit()
     except Exception as error:
         print("Connection refused...")
         print(f"Error - {error}")
 
 
 async def sql_add_data(state):
-    async with state.proxy() as data:
-        cur.execute(
-            'INSERT INTO user_settings (user, DK021_2015, Status, Procurement_type, Region, Dispatch_time, Email) '
-            'VALUES (?, ?, ?, ?, ?, ?, ?)', tuple(data.values()))
-        base.commit()
+    try:
+        async with state.proxy() as data:
+            cur.execute(
+                'INSERT INTO user_settings (user, DK021_2015, Status, Procurement_type, Region, Dispatch_time, Email) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)', tuple(data.values()))
+            base.commit()
+            return True
+    except sq.Error as error:
+        print(f"Error occurred while adding data: {error}")
+        # return 'Виникла внутрішня помилка'
+        return False
 
 
 async def sql_read(message):

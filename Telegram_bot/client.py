@@ -83,8 +83,11 @@ async def dispatch_time(message: types.Message, state: FSMContext):
 async def email(message: types.Message, state: FSMContext):
     async with state.proxy() as data:  # работа со словарем машины состояний
         data['Email'] = message.text.lower()
-    await sql_add_data(state)  # записываем данные в бд
-    await message.answer('Новий запит успішно додано', reply_markup=action_menu_markup)
+    success = await sql_add_data(state)  # записываем данные в бд
+    if success:
+        await message.answer('Новий запит успішно додано', reply_markup=action_menu_markup)
+    else:
+        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
     await state.finish()  # тут заканчивается машина состояний
 
 
