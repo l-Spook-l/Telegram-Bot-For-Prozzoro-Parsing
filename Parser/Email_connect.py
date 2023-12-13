@@ -31,7 +31,7 @@ async def send_email(data):
         message = MIMEMultipart("alternative")
         message["From"] = sender
         message["To"] = recipient
-        message["Subject"] = "Тестовая тема"
+        message["Subject"] = "Список тендерів за вашими параметрами"
         message.attach(MIMEText(template, "html", "utf-8"))
         await aiosmtplib.send(message, hostname="smtp.gmail.com", port=465, use_tls=True, username=sender,
                               password=password)

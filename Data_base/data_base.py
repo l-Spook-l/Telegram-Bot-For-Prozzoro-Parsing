@@ -76,35 +76,51 @@ async def sql_read(message):
 
 async def sql_read_for_del(message):
     # получаем список запросов для удаления
-    return cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall()
+    try:
+        return cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall()
+    except sq.Error as error:
+        print(f"Error occurred while reading data: {error}")
+        return False
 
 
 async def sql_delete_data(data):
     # удаляем выбранный запрос
-    cur.execute('DELETE FROM user_settings WHERE id = ?', (data,))
-    base.commit()
+    try:
+        cur.execute('DELETE FROM user_settings WHERE id = ?', (data,))
+        base.commit()
+        return True
+    except sq.Error as error:
+        print(f"Error occurred while remove data: {error}")
+        return False
 
 
 async def sql_read_time(time_now):
     # мониторим время
-    return cur.execute('SELECT * FROM user_settings WHERE Dispatch_time = ?', (time_now,)).fetchall()
+    try:
+        return cur.execute('SELECT * FROM user_settings WHERE Dispatch_time = ?', (time_now,)).fetchall()
+    except sq.Error as error:
+        print(f"Error occurred while check time: {error}")
 
 
 async def sql_get_data(user_id, time):
     data_list = []
 
-    # перебираем все данные по таблицам в виде списка
-    for ret in cur.execute(f'SELECT * FROM user_settings WHERE User = {user_id} AND Dispatch_time = ?',
-                           (time,)).fetchall():
-        # разбираем таблицу по столбцам
-        data_list.append({
-            'id': ret[0],
-            'user': ret[1],
-            'ДК021:2015': ret[2],
-            'Статус': ret[3],
-            'Вид закупівлі': ret[4],
-            'Регіон': ret[5],
-            'Час відправки': ret[6],
-            'Пошта': ret[7],
-        })
-    return data_list
+    try:
+        # перебираем все данные по таблицам в виде списка
+        for ret in cur.execute(f'SELECT * FROM user_settings WHERE user = {user_id} AND Dispatch_time = ?',
+                               (time,)).fetchall():
+            # разбираем таблицу по столбцам
+            data_list.append({
+                'id': ret[0],
+                'user': ret[1],
+                'ДК021:2015': ret[2],
+                'Статус': ret[3],
+                'Вид закупівлі': ret[4],
+                'Регіон': ret[5],
+                'Час відправки': ret[6],
+                'Пошта': ret[7],
+            })
+        return data_list
+    except sq.Error as error:
+        print(f"Error occurred while get data: {error}")
+        return False

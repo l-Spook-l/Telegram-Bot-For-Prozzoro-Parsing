@@ -16,12 +16,15 @@ async def check_update_database():
         formatted_time = now.strftime("%H:%M")
         print('=================Time now: ', datetime.datetime.now(), '===================================')
         check_data = await sql_read_time(formatted_time)
-        # если при проверки времени что-то есть
+        # если при проверке времени что-то есть
         if check_data:
             data = await sql_get_data(check_data[0][1], formatted_time)
-            await send_email(data)
+            if data:
+                await send_email(data)
+            else:
+                print('Помилка з отриманням даних')
         time_correction = datetime.datetime.now() - now
-        print(f'###################### Погрешность - {time_correction.total_seconds()} ###############################')
+        print(f'###################### Uncertainty - {time_correction.total_seconds()} ###############################')
 
 
 async def on_startup(_):

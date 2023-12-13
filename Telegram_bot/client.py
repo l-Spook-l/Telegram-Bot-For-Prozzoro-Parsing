@@ -22,7 +22,7 @@ class FSMClient(StatesGroup):
 
 
 async def start_bot(message: types.Message):
-    print('message', message)
+    print('data about user', message)
     await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
 
 
@@ -102,21 +102,28 @@ async def list_requests(message: types.Message):
 # если событие - (del)
 async def del_callback_run(callback_query: types.CallbackQuery):
     # удаляем выбраную запись
-    await sql_delete_data(callback_query.data.replace('del ', ''))
-    # и отвечаем для окончания процесса
-    await callback_query.answer(text='Запит успішно видалено', show_alert=True)
+    # await sql_delete_data(callback_query.data.replace('del ', ''))
+    success = await sql_delete_data(callback_query.data.replace('del ', ''))
+    if success:
+        # и отвечаем для окончания процесса
+        await callback_query.answer(text='Запит успішно видалено', show_alert=True)
+    else:
+        await callback_query.answer(text='Виникла внутрішня помилка, будь ласка спробуйте пізніше', show_alert=True)
 
 
 # добавляем кнопку удалить
 async def delete_item(message: types.Message):
     # читаем данные из бд
     read = await sql_read_for_del(message)
-    for ret in read:
-        # отправляем данные и создаем кнопки для каждого запроса
-        await bot.send_message(message.from_user.id,
-                               f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}',
-                               reply_markup=InlineKeyboardMarkup().add(
-                                   InlineKeyboardButton('Видалити', callback_data=f'del {ret[0]}')))
+    if read:
+        for ret in read:
+            # отправляем данные и создаем кнопки для каждого запроса
+            await bot.send_message(message.from_user.id,
+                                   f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}',
+                                   reply_markup=InlineKeyboardMarkup().add(
+                                       InlineKeyboardButton('Видалити', callback_data=f'del {ret[0]}')))
+    else:
+        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
 
 
 def register_handlers_client(dp: Dispatcher):
