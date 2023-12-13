@@ -58,16 +58,20 @@ async def sql_add_data(state):
             return True
     except sq.Error as error:
         print(f"Error occurred while adding data: {error}")
-        # return 'Виникла внутрішня помилка'
         return False
 
 
 async def sql_read(message):
-    # проходимся по всем запросам пользователя
-    for ret in cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall():
-        # возвращаем все запросы, для нужного пользователя
-        await bot.send_message(message.from_user.id,
-                               f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}')
+    try:
+        # проходимся по всем запросам пользователя
+        for ret in cur.execute(f'SELECT * FROM user_settings WHERE user = {message.from_user.id}').fetchall():
+            # возвращаем все запросы, для нужного пользователя
+            await bot.send_message(message.from_user.id,
+                                   f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}')
+        return True
+    except sq.Error as error:
+        print(f"Error occurred while reading data: {error}")
+        return False
 
 
 async def sql_read_for_del(message):

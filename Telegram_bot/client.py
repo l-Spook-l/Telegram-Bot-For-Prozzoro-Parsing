@@ -22,7 +22,7 @@ class FSMClient(StatesGroup):
 
 
 async def start_bot(message: types.Message):
-    print('messa', message)
+    print('message', message)
     await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
 
 
@@ -93,10 +93,13 @@ async def email(message: types.Message, state: FSMContext):
 
 async def list_requests(message: types.Message):
     await message.reply('Список ваших запитів')
-    await sql_read(message)
+    # await sql_read(message)
+    success = await sql_read(message)
+    if not success:
+        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
 
 
-# если событие - (del )
+# если событие - (del)
 async def del_callback_run(callback_query: types.CallbackQuery):
     # удаляем выбраную запись
     await sql_delete_data(callback_query.data.replace('del ', ''))
