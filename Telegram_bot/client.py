@@ -77,7 +77,7 @@ async def DK021_2015(message: types.Message, state: FSMContext):
             data['user'] = message.from_user.id
             data['DK021_2015'] = DK021_2015_input  # Сохраняем статус в data
             await FSMClient.next()
-            await message.answer('Введіть вид закупівлі')
+            await message.answer('Введіть статус')
         else:
             await message.answer('Не вірний код, спробуйте ще раз')
             await message.answer('Введіть код ДК021:2015')
@@ -91,14 +91,24 @@ async def DK021_2015(message: types.Message, state: FSMContext):
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def status(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        status_input = message.text.lower()  # Получаем ввод пользователя
-        if status_input in status_data or status_input == 'пропустити':
-            data['Status'] = status_input  # Сохраняем статус в data
+        # status_input = message.text.lower()  # Получаем ввод пользователя
+        status_input = message.text.lower().split(', ')  # Получаем ввод пользователя, разделяя по запятой
+
+        # Проверяем каждый введенный статус по отдельности
+        valid_statuses = [status for status in status_input if status in status_data or status == 'пропустити']
+
+        # print('input status', status_input)
+        # print('valid_statuses', valid_statuses)
+        # if status_input in status_data or status_input == 'пропустити':
+        if valid_statuses:
+            # data['Status'] = status_input  # Сохраняем статус в data
+            data['Status'] = ', '.join(valid_statuses)  # Сохраняем валидные статусы в data
             await FSMClient.next()
             await message.answer('Введіть вид закупівлі')
         else:
             await message.answer('Такого статусу немає, спробуйте ще раз')
             await message.answer('Введіть статус')
+        print('data', data)
 
 
 # async def procurement_type(message: types.Message, state: FSMContext):
@@ -109,9 +119,13 @@ async def status(message: types.Message, state: FSMContext):
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def procurement_type(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        procurement_type_input = message.text.lower()  # Получаем ввод пользователя
-        if procurement_type_input in procurement_type_data or procurement_type_input == 'пропустити':
-            data['Procurement_type'] = procurement_type_input
+        procurement_type_input = message.text.lower().split(', ')  # Получаем ввод пользователя, разделяя по запятой
+
+        # Проверяем каждый введенный статус по отдельности
+        valid_procurement_types = [procurement_type for procurement_type in procurement_type_input if
+                                   procurement_type in procurement_type_data or procurement_type == 'пропустити']
+        if valid_procurement_types:
+            data['Procurement_type'] = ', '.join(valid_procurement_types)
             await FSMClient.next()
             await message.answer('Оберіть потрібний регіон')
         else:
@@ -127,9 +141,11 @@ async def procurement_type(message: types.Message, state: FSMContext):
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def region(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        region_input = message.text.lower()  # Получаем ввод пользователя
-        if region_input in regions_data or region_input == 'пропустити':
-            data['Region'] = region_input
+        region_input = message.text.lower().split(', ')  # Получаем ввод пользователя
+        # Проверяем каждый введенный статус по отдельности
+        valid_region = [region for region in region_input if region in regions_data or region == 'пропустити']
+        if valid_region:
+            data['Region'] = ', '.join(valid_region)
             await FSMClient.next()
             await message.answer('Введіть час отправлення повідомлення на електронну пошту')
         else:
