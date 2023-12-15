@@ -16,7 +16,7 @@ async def check_update_database():
         formatted_time = now.strftime("%H:%M")
         print('=================Time now: ', datetime.datetime.now(), '===================================')
         check_data = await sql_read_time(formatted_time)
-        # если при проверке времени что-то есть
+        # If there's something during the time check
         if check_data:
             data = await sql_get_data(check_data[0][1], formatted_time)
             if data:
@@ -28,14 +28,12 @@ async def check_update_database():
 
 
 async def on_startup(_):
-    sql_connect()  # подключаем БД
+    sql_connect()
     print('Bot online')
 
 
 client.register_handlers_client(dp)
 
 if __name__ == "__main__":
-    # Запускаем асинхронный цикл с запуском задачи по расписанию
     asyncio.ensure_future(check_update_database())
-    # Запуск бота
     executor.start_polling(dp, on_startup=on_startup)

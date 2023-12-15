@@ -4,9 +4,7 @@ from fake_useragent import UserAgent
 
 
 async def get_json(data_for_parser):
-    # Создание экземпляра класса UserAgent
     user_agent = UserAgent()
-    # Генерация случайного User-Agent
     random_user_agent = user_agent.chrome
     headers = {
         "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -16,10 +14,7 @@ async def get_json(data_for_parser):
     list_data = []
 
     urls = await get_url(data_for_parser)
-    # проходим по каждому url
     for url in range(len(urls)):
-        # print('url', url)
-        # print('urls', urls[url])
         async with (aiohttp.ClientSession() as session):
             response = await session.post(url=urls[url], headers=headers)
             data = await response.json()
@@ -42,12 +37,6 @@ async def get_json(data_for_parser):
                         data_page = await response_page.json()
                         for tender in range(len(data_page["data"])):
                             title = data_page["data"][tender]["title"]
-                            # try:
-                            #     city_company = data_page["data"][tender]["procuringEntity"]["address"]["locality"]
-                            # except KeyError:
-                            #     city_company = data_page["data"][tender]["procuringEntity"]["address"]["region"]
-                            # except Exception as error:
-                            #     city_company = 'Регіон не вказано'
                             city_company = data_page["data"][tender]["procuringEntity"]["address"].get("locality") or \
                                            data_page["data"][tender]["procuringEntity"]["address"].get("region") or \
                                            'Регіон не вказано або вказано не вірно'
