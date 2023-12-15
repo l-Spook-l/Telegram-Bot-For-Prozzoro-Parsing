@@ -60,8 +60,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def DK021_2015(message: types.Message, state: FSMContext):
-    # Паттерн для проверки кода DK021_2015
-    # pattern = r'^\d{8}-\d$'
+    # Pattern for checking the DK021_2015 code
     pattern = r'^\d{8}-\d{1,3}$'
     async with state.proxy() as data:
         DK021_2015_input = message.text.lower()
