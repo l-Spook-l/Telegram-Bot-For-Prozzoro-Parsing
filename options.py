@@ -1,4 +1,4 @@
-status = {
+status_data = {
     'період уточнень': 'active.enquiries',
     'подання пропозицій': 'active.tendering',
     'прекваліфікація': 'active.pre-qualification',
@@ -16,7 +16,7 @@ status = {
 }
 
 
-procurement_type = {
+procurement_type_data = {
     'спрощена закупівля': 'belowThreshold',
     'відкриті торги з особливостями': 'aboveThreshold',
     'відкриті торги': 'aboveThresholdUA',
@@ -36,7 +36,7 @@ procurement_type = {
     'спрощені торги із застосуванням електронної системи закупівель': 'simple.defense',
 }
 
-regions = {
+regions_data = {
     'севастополь': '&region=99',
     'луганська область': '&region=91-94',
     'місто Київ': '&region=1-6',
@@ -65,36 +65,3 @@ regions = {
     'вінницька область': '&region=21-24',
     'рівненська область': '&region=33-35',
 }
-
-
-async def get_url(data):
-    list_url = []
-    print('data', data)
-    for i in range(len(data)):
-        filters = ''
-        DK012_2015 = data[i]['ДК021:2015'].split(', ')
-        Status = data[i]['Статус'].split(', ')
-        Procurement_type = data[i]['Вид закупівлі'].split(', ')
-        Region = data[i]['Регіон'].split(', ')
-        print('region ', Region)
-
-        if Status[0] != 'пропустити':
-            for id in range(len(Status)):
-                filters += f'&status%5B{id}%5D={status[Status[id]]}'
-
-        if Procurement_type[0] != 'пропустити':
-            for id in range(len(Procurement_type)):
-                filters += f'&proc_type%5B{id}%5D={procurement_type[Procurement_type[id]]}'
-
-        if DK012_2015[0] != 'пропустити':
-            for id in range(len(DK012_2015)):
-                filters += f'&cpv%5B{id}%5D={DK012_2015[id]}'
-
-        if Region[0] != 'пропустити':
-            filters += regions[Region[0]]
-
-        url = f'https://prozorro.gov.ua/api/search/tenders?filterType=tenders{filters}'
-        list_url.append(url)
-    print('list', list_url)
-
-    return list_url

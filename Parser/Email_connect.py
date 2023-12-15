@@ -11,6 +11,7 @@ load_dotenv()
 
 async def send_email(data):
     await create_HTML(data)
+    # print('send email data', data)
     for i in range(len(data)):
         # Адрес электронной почты, которая будет отправлять сообщение
         sender = os.getenv('EMAIL')

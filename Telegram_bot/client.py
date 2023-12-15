@@ -6,6 +6,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from Data_base.data_base import sql_add_data, sql_read, sql_delete_data, sql_read_for_del
 from config import bot
 from .client_buttons import action_menu_markup, skip_cancel_markup
+from options import status_data, procurement_type_data, regions_data
 import re
 
 dp = Dispatcher(bot)
@@ -66,25 +67,58 @@ async def DK021_2015(message: types.Message, state: FSMContext):
     await message.answer('Введіть статус')
 
 
+# async def status(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['Status'] = message.text.lower()
+#     await FSMClient.next()
+#     await message.answer
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def status(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['Status'] = message.text.lower()
-    await FSMClient.next()
-    await message.answer('Введіть вид закупівлі')
+        status_input = message.text.lower()  # Получаем ввод пользователя
+        if status_input in status_data or status_input == 'пропустити':
+            data['Status'] = status_input  # Сохраняем статус в data
+            await FSMClient.next()
+            await message.answer('Введіть вид закупівлі')
+        else:
+            await message.answer('Такого статусу немає, спробуйте ще раз')
+            await message.answer('Введіть статус')
 
 
+# async def procurement_type(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['Procurement_type'] = message.text.lower()
+#     await FSMClient.next()
+#     await message.answer('Оберіть потрібний регіон')
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def procurement_type(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['Procurement_type'] = message.text.lower()
-    await FSMClient.next()
-    await message.answer('Оберіть потрібний регіон')
+        procurement_type_input = message.text.lower()  # Получаем ввод пользователя
+        if procurement_type_input in procurement_type_data or procurement_type_input == 'пропустити':
+            data['Procurement_type'] = procurement_type_input
+            await FSMClient.next()
+            await message.answer('Оберіть потрібний регіон')
+        else:
+            await message.answer('Такого виду закупівлі немає, спробуйте ще раз')
+            await message.answer('Введіть вид закупівлі')
 
 
+# async def region(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         data['Region'] = message.text.lower()
+#     await FSMClient.next()
+#     await message.answer('Введіть час отправлення повідомлення на електронну пошту')
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def region(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        data['Region'] = message.text.lower()
-    await FSMClient.next()
-    await message.answer('Введіть час отправлення повідомлення на електронну пошту')
+        region_input = message.text.lower()  # Получаем ввод пользователя
+        if region_input in regions_data or region_input == 'пропустити':
+            data['Region'] = region_input
+            await FSMClient.next()
+            await message.answer('Введіть час отправлення повідомлення на електронну пошту')
+        else:
+            await message.answer('Такого регіону немає, спробуйте ще раз')
+            await message.answer('Оберіть потрібний регіон')
 
 
 async def dispatch_time(message: types.Message, state: FSMContext):
@@ -119,7 +153,7 @@ async def list_requests(message: types.Message):
 
 # если событие - (del)
 async def del_callback_run(callback_query: types.CallbackQuery):
-    # удаляем выбраную запись
+    # удаляем выбранную запись
     # await sql_delete_data(callback_query.data.replace('del ', ''))
     success = await sql_delete_data(callback_query.data.replace('del ', ''))
     if success:
