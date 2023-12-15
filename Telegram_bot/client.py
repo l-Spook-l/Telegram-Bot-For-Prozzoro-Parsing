@@ -41,10 +41,12 @@ async def help_user(message: types.Message):
         "\nРегіон: київська область"
         "\nЧас відправки: 18:08"
         "\nПошта: ваша пошта"
-        "\nТакож якщо вам щось не потрібно, ви можете натиснути кнопку - пропустити",
+        "\nТакож якщо вам щось не потрібно, ви можете натиснути кнопку - пропустити."
+        "\nКонтакти: uaspookua@gmail.com",
         reply_markup=action_menu_markup)
 
 
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def create_new_request(message: types.Message):
     await FSMClient.DK021_2015.set()  # для ожидания ввода
     await message.answer('Введіть код ДК021:2015', reply_markup=skip_cancel_markup)
@@ -59,12 +61,26 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await message.reply('Додавання нового запиту скасовано', reply_markup=action_menu_markup)
 
 
+# async def DK021_2015(message: types.Message, state: FSMContext):
+#     async with state.proxy() as data:  # работа со словарем машины состояний
+#         data['user'] = message.from_user.id
+#         data['DK021_2015'] = message.text.lower()
+#     await FSMClient.next()  # для ожидания ввода
+#     await message.answer('Введіть статус')
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def DK021_2015(message: types.Message, state: FSMContext):
+    # Паттерн для проверки кода DK021_2015
+    pattern = r'^\d{8}-\d$'
     async with state.proxy() as data:  # работа со словарем машины состояний
-        data['user'] = message.from_user.id
-        data['DK021_2015'] = message.text.lower()
-    await FSMClient.next()  # для ожидания ввода
-    await message.answer('Введіть статус')
+        DK021_2015_input = message.text.lower()  # Получаем ввод пользователя
+        if re.match(pattern, DK021_2015_input) or DK021_2015_input == 'пропустити':
+            data['user'] = message.from_user.id
+            data['DK021_2015'] = DK021_2015_input  # Сохраняем статус в data
+            await FSMClient.next()
+            await message.answer('Введіть вид закупівлі')
+        else:
+            await message.answer('Не вірний код, спробуйте ще раз')
+            await message.answer('Введіть код ДК021:2015')
 
 
 # async def status(message: types.Message, state: FSMContext):
@@ -121,6 +137,7 @@ async def region(message: types.Message, state: FSMContext):
             await message.answer('Оберіть потрібний регіон')
 
 
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def dispatch_time(message: types.Message, state: FSMContext):
     async with state.proxy() as data:  # работа со словарем машины состояний
         # Удаление всех символов кроме цифр
@@ -132,6 +149,7 @@ async def dispatch_time(message: types.Message, state: FSMContext):
     await message.answer('Введіть адрес електронної пошти')
 
 
+@dp.message_handler(content_types=types.ContentType.TEXT)
 async def email(message: types.Message, state: FSMContext):
     async with state.proxy() as data:  # работа со словарем машины состояний
         data['Email'] = message.text.lower()
