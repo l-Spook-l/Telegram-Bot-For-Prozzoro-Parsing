@@ -9,13 +9,9 @@ async def create_file_HTML(index, data):
 
 async def create_HTML(data_for_parser):
     data = await get_json(data_for_parser)
-    # print('create html data', data)
 
     for i in range(len(data)):
-        # print('i', i)
-        # print('type(data[i])', type(data[i]))
-        # print('data[i]', data[i])
-        # Шаблон HTML-файла
+        # HTML file template
         List_HTML_for_email = ['<!doctype html>\n', '<html lang="en">\n', '<head>\n', '    <meta charset="UTF-8">\n',
                                '    <meta name="viewport"\n',
                                '          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">\n',
@@ -35,5 +31,3 @@ async def create_HTML(data_for_parser):
             line += 7
 
         await create_file_HTML(i + 1, List_HTML_for_email)
-        # async with aiofiles.open(f"index_{i + 1}.html", 'w', encoding='utf-8') as file:
-        #     await file.write(' '.join(List_HTML_for_email))

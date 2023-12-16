@@ -3,8 +3,6 @@ from options import status_data, procurement_type_data, regions_data
 
 async def get_url(data):
     list_url = []
-    # print('data', data)
-    # try:
     for i in range(len(data)):
         filters = ''
         DK012_2015 = data[i]['ДК021:2015'].split(', ')
@@ -29,10 +27,5 @@ async def get_url(data):
 
         url = f'https://prozorro.gov.ua/api/search/tenders?filterType=tenders{filters}'
         list_url.append(url)
-    print('list', list_url)
 
     return list_url
-    # except KeyError as error:
-    #     print('Error', KeyError)
-    #     return ['error', f"Вітаю ви мали отримати список тендерів, але ви не вірно вказали даний параметр - {error}."
-    #             f",\nБудь ласка створить новий запит, з виправленим значенням."]

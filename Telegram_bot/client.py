@@ -12,7 +12,6 @@ import re
 dp = Dispatcher(bot)
 
 
-# класс для состояний
 class FSMClient(StatesGroup):
     DK021_2015 = State()
     Status = State()
@@ -23,7 +22,6 @@ class FSMClient(StatesGroup):
 
 
 async def start_bot(message: types.Message):
-    print('data about user', message)
     await message.answer("Вітаю, оберіть, що потрібно зробити", reply_markup=action_menu_markup)
 
 
@@ -48,11 +46,10 @@ async def help_user(message: types.Message):
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def create_new_request(message: types.Message):
-    await FSMClient.DK021_2015.set()  # для ожидания ввода
+    await FSMClient.DK021_2015.set()
     await message.answer('Введіть код ДК021:2015', reply_markup=skip_cancel_markup)
 
 
-# выход из состояний (команда для отмены)
 async def cancel_handler(message: types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state is None:
@@ -61,21 +58,16 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await message.reply('Додавання нового запиту скасовано', reply_markup=action_menu_markup)
 
 
-# async def DK021_2015(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:  # работа со словарем машины состояний
-#         data['user'] = message.from_user.id
-#         data['DK021_2015'] = message.text.lower()
-#     await FSMClient.next()  # для ожидания ввода
-#     await message.answer('Введіть статус')
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def DK021_2015(message: types.Message, state: FSMContext):
-    # Паттерн для проверки кода DK021_2015
-    pattern = r'^\d{8}-\d$'
-    async with state.proxy() as data:  # работа со словарем машины состояний
-        DK021_2015_input = message.text.lower()  # Получаем ввод пользователя
-        if re.match(pattern, DK021_2015_input) or DK021_2015_input == 'пропустити':
+    # Pattern for checking the DK021_2015 code
+    pattern = r'^\d{8}-\d{1,3}$'
+    async with state.proxy() as data:
+        DK021_2015_input = [code.strip() for code in message.text.lower().split(',')]
+        valid_code = [code for code in DK021_2015_input if re.match(pattern, code) or code == 'пропустити']
+        if valid_code:
             data['user'] = message.from_user.id
-            data['DK021_2015'] = DK021_2015_input  # Сохраняем статус в data
+            data['DK021_2015'] = ', '.join(valid_code)
             await FSMClient.next()
             await message.answer('Введіть статус')
         else:
@@ -83,45 +75,27 @@ async def DK021_2015(message: types.Message, state: FSMContext):
             await message.answer('Введіть код ДК021:2015')
 
 
-# async def status(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data['Status'] = message.text.lower()
-#     await FSMClient.next()
-#     await message.answer
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def status(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        # status_input = message.text.lower()  # Получаем ввод пользователя
-        status_input = message.text.lower().split(', ')  # Получаем ввод пользователя, разделяя по запятой
+        status_input = message.text.lower().split(', ')
 
-        # Проверяем каждый введенный статус по отдельности
         valid_statuses = [status for status in status_input if status in status_data or status == 'пропустити']
 
-        # print('input status', status_input)
-        # print('valid_statuses', valid_statuses)
-        # if status_input in status_data or status_input == 'пропустити':
         if valid_statuses:
-            # data['Status'] = status_input  # Сохраняем статус в data
-            data['Status'] = ', '.join(valid_statuses)  # Сохраняем валидные статусы в data
+            data['Status'] = ', '.join(valid_statuses)
             await FSMClient.next()
             await message.answer('Введіть вид закупівлі')
         else:
             await message.answer('Такого статусу немає, спробуйте ще раз')
             await message.answer('Введіть статус')
-        print('data', data)
 
 
-# async def procurement_type(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data['Procurement_type'] = message.text.lower()
-#     await FSMClient.next()
-#     await message.answer('Оберіть потрібний регіон')
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def procurement_type(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        procurement_type_input = message.text.lower().split(', ')  # Получаем ввод пользователя, разделяя по запятой
+        procurement_type_input = message.text.lower().split(', ')
 
-        # Проверяем каждый введенный статус по отдельности
         valid_procurement_types = [procurement_type for procurement_type in procurement_type_input if
                                    procurement_type in procurement_type_data or procurement_type == 'пропустити']
         if valid_procurement_types:
@@ -133,16 +107,10 @@ async def procurement_type(message: types.Message, state: FSMContext):
             await message.answer('Введіть вид закупівлі')
 
 
-# async def region(message: types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data['Region'] = message.text.lower()
-#     await FSMClient.next()
-#     await message.answer('Введіть час отправлення повідомлення на електронну пошту')
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def region(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        region_input = message.text.lower().split(', ')  # Получаем ввод пользователя
-        # Проверяем каждый введенный статус по отдельности
+        region_input = message.text.lower().split(', ')
         valid_region = [region for region in region_input if region in regions_data or region == 'пропустити']
         if valid_region:
             data['Region'] = ', '.join(valid_region)
@@ -155,10 +123,10 @@ async def region(message: types.Message, state: FSMContext):
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def dispatch_time(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:  # работа со словарем машины состояний
-        # Удаление всех символов кроме цифр
+    async with state.proxy() as data:
+        # Removing all characters except digits.
         cleaned_time = re.sub(r'\D', '', message.text)
-        # Добавление символа ":" после первых двух цифр
+        # Adding a colon ':' after the first two digits.
         formatted_time = cleaned_time[:2] + ":" + cleaned_time[2:]
         data['Dispatch_time'] = formatted_time
     await FSMClient.next()
@@ -167,43 +135,35 @@ async def dispatch_time(message: types.Message, state: FSMContext):
 
 @dp.message_handler(content_types=types.ContentType.TEXT)
 async def email(message: types.Message, state: FSMContext):
-    async with state.proxy() as data:  # работа со словарем машины состояний
+    async with state.proxy() as data:
         data['Email'] = message.text.lower()
-    success = await sql_add_data(state)  # записываем данные в бд
+    success = await sql_add_data(state)
     if success:
         await message.answer('Новий запит успішно додано', reply_markup=action_menu_markup)
     else:
         await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
-    await state.finish()  # тут заканчивается машина состояний
+    await state.finish()
 
 
 async def list_requests(message: types.Message):
     await message.reply('Список ваших запитів')
-    # await sql_read(message)
     success = await sql_read(message)
     if not success:
         await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
 
 
-# если событие - (del)
 async def del_callback_run(callback_query: types.CallbackQuery):
-    # удаляем выбранную запись
-    # await sql_delete_data(callback_query.data.replace('del ', ''))
     success = await sql_delete_data(callback_query.data.replace('del ', ''))
     if success:
-        # и отвечаем для окончания процесса
         await callback_query.answer(text='Запит успішно видалено', show_alert=True)
     else:
         await callback_query.answer(text='Виникла внутрішня помилка, будь ласка спробуйте пізніше', show_alert=True)
 
 
-# добавляем кнопку удалить
 async def delete_item(message: types.Message):
-    # читаем данные из бд
     read = await sql_read_for_del(message)
     if read:
         for ret in read:
-            # отправляем данные и создаем кнопки для каждого запроса
             await bot.send_message(message.from_user.id,
                                    f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}',
                                    reply_markup=InlineKeyboardMarkup().add(
