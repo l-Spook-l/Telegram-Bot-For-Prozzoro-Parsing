@@ -63,10 +63,11 @@ async def DK021_2015(message: types.Message, state: FSMContext):
     # Pattern for checking the DK021_2015 code
     pattern = r'^\d{8}-\d{1,3}$'
     async with state.proxy() as data:
-        DK021_2015_input = message.text.lower()
-        if re.match(pattern, DK021_2015_input) or DK021_2015_input == 'пропустити':
+        DK021_2015_input = [code.strip() for code in message.text.lower().split(',')]
+        valid_code = [code for code in DK021_2015_input if re.match(pattern, code) or code == 'пропустити']
+        if valid_code:
             data['user'] = message.from_user.id
-            data['DK021_2015'] = DK021_2015_input
+            data['DK021_2015'] = ', '.join(valid_code)
             await FSMClient.next()
             await message.answer('Введіть статус')
         else:
