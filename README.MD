@@ -32,6 +32,25 @@ The bot is designed for convenient and swift retrieval of tender information dir
 
 - Python 3.x
 - Installed packages from requirements.txt
+- 
+## Planned Changes
+
+### Updating Queries Using ORM
+
+During development, there's an ongoing transition from using raw SQL queries to using Object-Relational Mapping (ORM). 
+This will simplify working with the database, enhance code readability and maintainability, and reduce the chances of errors when querying the database.
+
+#### Expected Changes:
+- Replacement of raw SQL queries with ORM methods for data insertion, updating, deletion, and retrieval.
+- Creation of corresponding models for database tables.
+- Use of ORM methods to access data instead of direct SQL queries.
+
+### Additional Functionality
+
+In addition to this, there are plans to add new functionality for modifying database queries. 
+These new features will make it easier to modify and update user queries.
+
+Expect updates in the bot's functionality for easier data handling and the transition to ORM.
 
 ## Developers
 
