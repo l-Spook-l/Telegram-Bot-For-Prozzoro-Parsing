@@ -6,5 +6,7 @@ load_dotenv()
 
 storage = MemoryStorage()
 
+# подключаем токен бота
 bot = Bot(token=os.getenv('TOKEN'))
+# отслеживание событий
 dp = Dispatcher(bot, storage=storage)

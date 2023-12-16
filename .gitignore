@@ -4,5 +4,3 @@ prozorro_user_set.db
 .idea
 venv
 __pycache__/
-bot_prozorro_run.bat
-Data_base/data_base_orm.py
