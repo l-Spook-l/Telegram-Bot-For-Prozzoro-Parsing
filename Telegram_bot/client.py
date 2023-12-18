@@ -155,6 +155,9 @@ async def list_requests(message: types.Message):
                                    f'ДК021:2015: {user_settings.DK021_2015}\nСтатус: {user_settings.Status}\n'
                                    f'Вид закупівлі: {user_settings.Procurement_type}\nРегіон: {user_settings.Region}'
                                    f'\nЧас відправки: {user_settings.Dispatch_time}\nПошта: {user_settings.Email}')
+    elif len(get_data) == 0:
+        await message.answer('У вас нема створених запитів.',
+                             reply_markup=action_menu_markup)
     else:
         await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше',
                              reply_markup=action_menu_markup)
