@@ -147,13 +147,21 @@ async def email(message: types.Message, state: FSMContext):
 
 async def list_requests(message: types.Message):
     await message.reply('Список ваших запитів')
-    success = await sql_read(message)
-    if not success:
-        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
+    get_data = await sql_read(message)
+    if get_data:
+        for user_data in get_data:
+            user_settings = user_data[0]
+            await bot.send_message(message.from_user.id,
+                                   f'ДК021:2015: {user_settings.DK021_2015}\nСтатус: {user_settings.Status}\n'
+                                   f'Вид закупівлі: {user_settings.Procurement_type}\nРегіон: {user_settings.Region}'
+                                   f'\nЧас відправки: {user_settings.Dispatch_time}\nПошта: {user_settings.Email}')
+    else:
+        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше',
+                             reply_markup=action_menu_markup)
 
 
 async def del_callback_run(callback_query: types.CallbackQuery):
-    success = await sql_delete_data(callback_query.data.replace('del ', ''))
+    success = await sql_delete_data(int(callback_query.data.replace('del ', '')))
     if success:
         await callback_query.answer(text='Запит успішно видалено', show_alert=True)
     else:
@@ -161,15 +169,19 @@ async def del_callback_run(callback_query: types.CallbackQuery):
 
 
 async def delete_item(message: types.Message):
-    read = await sql_read_for_del(message)
-    if read:
-        for ret in read:
+    get_data = await sql_read_for_del(message)
+    if get_data:
+        for user_data in get_data:
+            user_settings = user_data[0]
             await bot.send_message(message.from_user.id,
-                                   f'ДК021:2015: {ret[2]}\nСтатус: {ret[3]}\nВид закупівлі: {ret[4]}\nРегіон: {ret[5]}\nЧас відправки: {ret[6]}\nПошта: {ret[7]}',
+                                   f'ДК021:2015: {user_settings.DK021_2015}\nСтатус: {user_settings.Status}\n'
+                                   f'Вид закупівлі: {user_settings.Procurement_type}\nРегіон: {user_settings.Region}'
+                                   f'\nЧас відправки: {user_settings.Dispatch_time}\nПошта: {user_settings.Email}',
                                    reply_markup=InlineKeyboardMarkup().add(
-                                       InlineKeyboardButton('Видалити', callback_data=f'del {ret[0]}')))
+                                       InlineKeyboardButton('Видалити', callback_data=f'del {user_settings.id}')))
     else:
-        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше', reply_markup=action_menu_markup)
+        await message.answer('Виникла внутрішня помилка, будь ласка спробуйте пізніше',
+                             reply_markup=action_menu_markup)
 
 
 def register_handlers_client(dp: Dispatcher):
