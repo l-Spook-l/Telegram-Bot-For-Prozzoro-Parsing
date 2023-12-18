@@ -1,18 +1,18 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
-# Создаем подключение к базе данных
-Base = declarative_base()
+from sqlalchemy.orm import Mapped, mapped_column
+from .config_db import Base
 
 
 class UserSettings(Base):
-    __tablename__ = 'user_settings'
+    __tablename__ = 'user_settings_table'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    user = Column(Integer)
-    DK021_2015 = Column(String)
-    Status = Column(String)
-    Procurement_type = Column(String)
-    Region = Column(String)
-    Dispatch_time = Column(String)
-    Email = Column(String)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user: Mapped[int]
+    DK021_2015: Mapped[str]
+    Status: Mapped[str]
+    Procurement_type: Mapped[str]
+    Region: Mapped[str]
+    Dispatch_time: Mapped[str]
+    Email: Mapped[str]
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
