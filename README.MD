@@ -1,8 +1,9 @@
 # Telegram Bot for Prozorro Parsing
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)
-![SQLite3](https://img.shields.io/badge/SQLite3-Database-orange?logo=sqlite)
 ![aiogram](https://img.shields.io/badge/aiogram-Async_Library-blueviolet)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?logo=postgresql)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-ORM-red?logo=python)
 ![aiofiles](https://img.shields.io/badge/aiofiles-Async_File_Operations-yellowgreen)
 ![aiosmtplib](https://img.shields.io/badge/aiosmtplib-Async_Email-yellow)
 ![aiohttp](https://img.shields.io/badge/aiohttp-Async_HTTP-blue)
@@ -39,11 +40,6 @@ The bot is designed for convenient and swift retrieval of tender information dir
 
 During development, there's an ongoing transition from using raw SQL queries to using Object-Relational Mapping (ORM). 
 This will simplify working with the database, enhance code readability and maintainability, and reduce the chances of errors when querying the database.
-
-#### Expected Changes:
-- Replacement of raw SQL queries with ORM methods for data insertion, updating, deletion, and retrieval.
-- Creation of corresponding models for database tables.
-- Use of ORM methods to access data instead of direct SQL queries.
 
 ### Additional Functionality
 
