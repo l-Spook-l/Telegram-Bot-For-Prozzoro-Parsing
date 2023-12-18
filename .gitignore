@@ -5,3 +5,4 @@ prozorro_user_set.db
 venv
 __pycache__/
 bot_prozorro_run.bat
+bot_prozorro_run.sh

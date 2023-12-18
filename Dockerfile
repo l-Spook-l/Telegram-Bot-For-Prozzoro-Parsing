@@ -9,4 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN chmod a+x docker/*.sh
+
 CMD ["./bot_prozorro_run.bat"]
+#CMD ["sh", "bot_prozorro_run.sh"]
