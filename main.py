@@ -3,7 +3,7 @@ import asyncio
 import datetime
 from config import dp
 from Telegram_bot import client
-from Data_base.data_base import sql_connect, sql_read_time, sql_get_data
+from Data_base.data_base import sql_read_time, get_data_tender
 from Parser.Email_connect import send_email
 
 
@@ -18,7 +18,7 @@ async def check_update_database():
         check_data = await sql_read_time(formatted_time)
         # If there's something during the time check
         if check_data:
-            data = await sql_get_data(check_data[0][1], formatted_time)
+            data = await get_data_tender(check_data)
             if data:
                 await send_email(data)
             else:
@@ -28,7 +28,6 @@ async def check_update_database():
 
 
 async def on_startup(_):
-    sql_connect()
     print('Bot online!')
 
 
