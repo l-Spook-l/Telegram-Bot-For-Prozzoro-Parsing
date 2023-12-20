@@ -36,11 +36,6 @@ The bot is designed for convenient and swift retrieval of tender information dir
 - 
 ## Planned Changes
 
-### Updating Queries Using ORM
-
-During development, there's an ongoing transition from using raw SQL queries to using Object-Relational Mapping (ORM). 
-This will simplify working with the database, enhance code readability and maintainability, and reduce the chances of errors when querying the database.
-
 ### Additional Functionality
 
 In addition to this, there are plans to add new functionality for modifying database queries. 

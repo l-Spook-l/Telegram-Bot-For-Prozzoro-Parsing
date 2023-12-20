@@ -20,6 +20,8 @@ services:
     command: ["/telegram_bot_prozorro/docker/run_bot.sh"]
     depends_on:
       - db
+    environment:
+      - TZ=Europe/Kiev
 
 volumes:
   pgdata:
