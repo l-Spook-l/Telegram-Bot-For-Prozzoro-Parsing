@@ -33,7 +33,7 @@ The bot is designed for convenient and swift retrieval of tender information dir
 
 - Python 3.x
 - Installed packages from requirements.txt
-- 
+
 ## Planned Changes
 
 ### Additional Functionality
